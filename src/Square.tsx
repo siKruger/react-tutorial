@@ -1,8 +1,9 @@
 import React from "react";
+import {squareProps} from "./Types";
 
 
-//Todo any?
-export function Square(props: any) {
+
+export function Square(props: squareProps) {
     return (
         <button className="square" onClick={props.onClick}> {props.value} </button>
     );
