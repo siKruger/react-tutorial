@@ -7,10 +7,9 @@ import {boardProps} from "./Types";
     return {};
 };*/
 
-export function Board(props: PropsWithChildren<boardProps>): React.ReactElement {
+export function Board(props: any) {
 
     const renderSquare = (i: number) => {
-        console.log("Board Props" ,props);
         return (
             <Square value={props.squares[i]} onClick={() => props.onClick(i)}/>
         );
