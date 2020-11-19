@@ -1,11 +1,13 @@
-import React from "react";
+import React, {PropsWithChildren, ReactNode} from "react";
 import {Square} from "./Square";
 import {boardProps} from "./Types";
 
 
+/*const Board2: React.FC<boardProps> = (props, context) => {
+    return {};
+};*/
 
-export function Board(props: boardProps) {
-
+export function Board(props: PropsWithChildren<boardProps>): React.ReactElement {
 
     const renderSquare = (i: number) => {
         console.log("Board Props" ,props);

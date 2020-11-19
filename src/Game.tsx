@@ -5,7 +5,7 @@ import {fieldValue, oneStep} from "./Types";
 
 
 
-export function Game() {
+export function Game(): React.ReactElement {
 
     const [stepNumber, setStepNumber] = useState(0);
     const [xIsNext, setxIsNext] = useState(true);
@@ -62,32 +62,29 @@ export function Game() {
     const history = historyOuter;
     const current: oneStep = history[stepNumber];
     const winner = calculateWinner(current.squares);
-    console.log("Current" , current);
-    console.log("Squares-Current", current.squares);
-    console.log("Game props type" ,typeof current.squares);
 
-    const moves = history.map((step: oneStep, move: number) => {
-        const desc = move ? 'Go to move #' + move : 'Go to game start';
-        return (<li key={move}>
-            <button onClick={() => jumpTo(move)}>{desc}</button>
-        </li>);
-    });
 
-    let status;
-    if (winner) {
-        status = 'Winner: ' + winner;
-    } else {
-        status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-    }
+
 
     return (
         <div className="game">
             <div className="game-board">
-                <Board squares={current.squares} onClick={(i: number) => handleClick(i)}/>
+                <Board squares={current.squares} onClick={(i: number) => handleClick(i)}> Test </Board>
             </div>
             <div className="game-info">
-                <div>{status}</div>
-                <ol>{moves}</ol>
+                <div>
+                    {
+                        winner ? `Winner ${winner}`: `Next player: ${xIsNext ? 'X' : 'O'}`
+                    }
+                </div>
+                <ol>{
+                    history.map((step: oneStep, move: number) => {
+                    const desc = move ? 'Go to move #' + move : 'Go to game start';
+                    return (<li key={move}>
+                        <button onClick={() => jumpTo(move)}>{desc}</button>
+                    </li>);
+                })}
+                </ol>
             </div>
         </div>
     );
