@@ -7,16 +7,18 @@ import axios from 'axios';
 
 export function Game(): React.ReactElement {
     let [board, setBoard] = useState([Array(9).fill(undefined)])
-    let [nextPlayer, setNextPlayer] = useState(null);
+    let [nextPlayer, setNextPlayer] = useState(undefined);
+    let [winner, setWinner] = useState(undefined)
     const reRender = false;
 
 
     //Nur EINMAL callen, alle 5 Sekunden
     useEffect(() => {
+        compareServerBoardToClient();
         const interval = setInterval(() => {
             console.log('Starting board Update...');
             compareServerBoardToClient();
-        }, 5000);
+        }, 1000);
     }, [reRender])
 
 
@@ -25,14 +27,17 @@ export function Game(): React.ReactElement {
         const serverReponse = await getBoardFromServer();
         const serverSquares = await serverReponse.squares;
         const serverNextPlayer = await serverReponse.player;
+        const serverWinner = await serverReponse.winner;
 
         if (serverSquares[0] != board[0]) {
             const newBoard = [...board];
             newBoard[0] = serverSquares;
             setBoard(newBoard);
             setNextPlayer(serverNextPlayer)
+            setWinner(serverWinner)
         }
     }
+
 
     const getBoardFromServer =  async () => {
         const axs = await axios.get('/api/ticTac')
@@ -66,14 +71,36 @@ export function Game(): React.ReactElement {
 
 
     //Todo calc winner, who is next?
+
+    const renderFieldOrWinner = () => {
+        if(winner == undefined) {
+            return (
+                <div className="game">
+                    <div className="game-board">
+                        <Board squares={board[0]} onClick={(i: number) => handleClick(i)}>  </Board>
+                    </div>
+                    <div className="game-info">
+                        An der Reihe ist: {nextPlayer}
+                    </div>
+                </div>
+            );
+        } else {
+            return(
+                <div>
+                    {winner} hat gewonnen!!
+                    <p></p>
+                    <button onClick={startNewGame}> Erneut spielen </button>
+                </div>
+            );
+        }
+    }
+
+
+    const startNewGame = () => {
+        const axs = axios.delete('/api/ticTac')
+    }
+
     return (
-        <div className="game">
-            <div className="game-board">
-                <Board squares={board[0]} onClick={(i: number) => handleClick(i)}>  </Board>
-            </div>
-            <div className="game-info">
-                An der Reihe ist: {nextPlayer}
-            </div>
-        </div>
+        <div> {renderFieldOrWinner()} </div>
     );
 }
