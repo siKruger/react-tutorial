@@ -9,18 +9,17 @@ export function Game(): React.ReactElement {
     let [board, setBoard] = useState([Array(9).fill(undefined)])
     let [nextPlayer, setNextPlayer] = useState(undefined);
     let [winner, setWinner] = useState(undefined)
+    let [didUseMove, setdidUseMove] = useState(false)
+
     const reRender = false;
 
 
     //Nur EINMAL callen, alle 5 Sekunden
     useEffect(() => {
-        compareServerBoardToClient();
         const interval = setInterval(() => {
-            console.log('Starting board Update...');
             compareServerBoardToClient();
         }, 1000);
     }, [reRender])
-
 
 
     const compareServerBoardToClient = async () => {
@@ -30,6 +29,7 @@ export function Game(): React.ReactElement {
         const serverWinner = await serverReponse.winner;
 
         if (serverSquares[0] != board[0]) {
+            setdidUseMove(false);
             const newBoard = [...board];
             newBoard[0] = serverSquares;
             setBoard(newBoard);
@@ -47,8 +47,10 @@ export function Game(): React.ReactElement {
 
     //Updaten des Klicks aufm Board
     const handleClick = async (i: number) => {
+
         let newBoard = [...board]
-        if (newBoard[0][i] == undefined) {
+        if (newBoard[0][i] == undefined && !didUseMove) {
+            setdidUseMove(true)
             newBoard[0][i] = nextPlayer;
             setBoard(newBoard);
 
@@ -61,7 +63,6 @@ export function Game(): React.ReactElement {
     }
 
     const sendNewDataToServer = async (sendToServer: any) => {
-        console.log("NEW BOARD AN SERVER SENDEN", sendToServer);
         const axs = await axios.post('/api/ticTac', {
             "board": sendToServer,
             "player": nextPlayer
