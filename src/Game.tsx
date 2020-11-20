@@ -35,21 +35,33 @@ export function Game(): React.ReactElement {
     }
 
     const getBoardFromServer =  async () => {
-        const axs = await axios.get('http://localhost:3000/api/ticTac')
+        const axs = await axios.get('/api/ticTac')
         return await axs.data.squares;
     }
 
 
     //Updaten des Klicks aufm Board
-    const handleClick = (i: number) => {
+    const handleClick = async (i: number) => {
         let newBoard = [...board]
-        console.log(newBoard[0][i]);
-
-        if(newBoard[0][i] == undefined) {
+        if (newBoard[0][i] == undefined) {
             newBoard[0][i] = nextPlayer;
+            setBoard(newBoard);
+
+
+            const sendToServer = newBoard[0];
+            await sendNewDataToServer(sendToServer);
+
+
         }
-        console.log("CLICK", i);
-        setBoard(newBoard);
+    }
+
+    const sendNewDataToServer = async (sendToServer: any) => {
+        console.log("NEW BOARD AN SERVER SENDEN", sendToServer);
+        const axs = await axios.post('/api/ticTac', {
+            "board": sendToServer,
+            "player": nextPlayer
+        })
+        await console.log(axs);
     }
 
 
