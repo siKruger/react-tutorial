@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import {Game} from "./Game";
 import reportWebVitals from './reportWebVitals';
+import HomeScreen from "./HomeScreen";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Game />
+    <HomeScreen />
   </React.StrictMode>,
   document.getElementById('root')
 );
